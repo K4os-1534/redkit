@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RedKit Security Report — {{ session.target }}</title>
+  <style>
+    /* ------------------------------------------------------------------ */
+    /* Design tokens                                                        */
+    /* ------------------------------------------------------------------ */
+    :root {
+      --bg:         #0d0f14;
+      --bg2:        #161a23;
+      --bg3:        #1e2330;
+      --border:     #2a3040;
+      --text:       #cdd6f4;
+      --text-dim:   #6c7086;
+      --accent:     #89b4fa;
+      --red:        #f38ba8;
+      --orange:     #fab387;
+      --yellow:     #f9e2af;
+      --blue:       #89b4fa;
+      --green:      #a6e3a1;
+      --white:      #cdd6f4;
+      --radius:     8px;
+      --radius-lg:  14px;
+      --shadow:     0 4px 24px rgba(0,0,0,0.5);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Reset & base                                                         */
+    /* ------------------------------------------------------------------ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ------------------------------------------------------------------ */
+    /* Layout                                                               */
+    /* ------------------------------------------------------------------ */
+    .wrapper { max-width: 1100px; margin: 0 auto; padding: 0 20px 60px; }
+
+    /* ------------------------------------------------------------------ */
+    /* Header                                                               */
+    /* ------------------------------------------------------------------ */
+    .header {
+      background: linear-gradient(135deg, #1e1e2e 0%, #181825 60%, #11111b 100%);
+      border-bottom: 2px solid var(--border);
+      padding: 48px 0 36px;
+      text-align: center;
+    }
+    .header .logo {
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: -2px;
+      background: linear-gradient(135deg, #f38ba8, #cba6f7, #89b4fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: inline-block;
+    }
+    .header .tagline { color: var(--text-dim); margin-top: 6px; font-size: 0.9rem; }
+    .header .meta-row {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .header .meta-item { display: flex; flex-direction: column; align-items: center; }
+    .header .meta-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); }
+    .header .meta-value { font-size: 0.95rem; font-weight: 600; color: var(--accent); margin-top: 2px; }
+
+    /* ------------------------------------------------------------------ */
+    /* Summary bar                                                          */
+    /* ------------------------------------------------------------------ */
+    .summary-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 32px 0 28px;
+    }
+    .sev-card {
+      flex: 1 1 140px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .sev-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .sev-card.critical::before { background: var(--red); }
+    .sev-card.high::before    { background: var(--orange); }
+    .sev-card.medium::before  { background: var(--yellow); }
+    .sev-card.low::before     { background: var(--blue); }
+    .sev-card.info::before    { background: var(--text-dim); }
+
+    .sev-card .count { font-size: 2.2rem; font-weight: 800; line-height: 1; }
+    .sev-card.critical .count { color: var(--red); }
+    .sev-card.high .count     { color: var(--orange); }
+    .sev-card.medium .count   { color: var(--yellow); }
+    .sev-card.low .count      { color: var(--blue); }
+    .sev-card.info .count     { color: var(--text-dim); }
+
+    .sev-card .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-top: 6px; }
+
+    /* ------------------------------------------------------------------ */
+    /* Section headings                                                     */
+    /* ------------------------------------------------------------------ */
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      margin: 40px 0 20px;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Finding cards                                                        */
+    /* ------------------------------------------------------------------ */
+    .finding-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 14px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: border-color 0.2s;
+    }
+    .finding-card:hover { border-color: var(--accent); }
+
+    .finding-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .finding-header:hover { background: var(--bg3); }
+
+    .sev-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      padding: 4px 10px;
+      border-radius: 99px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .sev-badge.CRITICAL { background: rgba(243,139,168,0.18); color: var(--red); border: 1px solid rgba(243,139,168,0.35); }
+    .sev-badge.HIGH     { background: rgba(250,179,135,0.18); color: var(--orange); border: 1px solid rgba(250,179,135,0.35); }
+    .sev-badge.MEDIUM   { background: rgba(249,226,175,0.15); color: var(--yellow); border: 1px solid rgba(249,226,175,0.3); }
+    .sev-badge.LOW      { background: rgba(137,180,250,0.15); color: var(--blue);   border: 1px solid rgba(137,180,250,0.3); }
+    .sev-badge.INFO     { background: rgba(108,112,134,0.2);  color: var(--text-dim); border: 1px solid rgba(108,112,134,0.3); }
+
+    .finding-type {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      background: var(--bg3);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .finding-title { flex: 1; font-weight: 600; font-size: 0.95rem; }
+    .toggle-icon { color: var(--text-dim); font-size: 0.8rem; transition: transform 0.2s; }
+
+    .finding-body {
+      padding: 0 20px 18px;
+      border-top: 1px solid var(--border);
+      display: none;
+    }
+    .finding-body.open { display: block; }
+
+    .finding-detail { color: var(--text); margin: 14px 0 10px; line-height: 1.7; }
+    .finding-evidence-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 6px; }
+    .finding-evidence {
+      background: #11111b;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-family: 'Cascadia Code', 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      color: var(--green);
+      white-space: pre-wrap;
+      word-break: break-all;
+      overflow-x: auto;
+    }
+    .finding-meta { font-size: 0.78rem; color: var(--text-dim); margin-top: 10px; }
+
+    /* ------------------------------------------------------------------ */
+    /* Empty state                                                          */
+    /* ------------------------------------------------------------------ */
+    .empty-state {
+      text-align: center;
+      color: var(--text-dim);
+      padding: 40px;
+      background: var(--bg2);
+      border-radius: var(--radius-lg);
+      border: 1px dashed var(--border);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Footer                                                               */
+    /* ------------------------------------------------------------------ */
+    .footer {
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+      padding: 28px 0;
+      margin-top: 60px;
+    }
+    .footer .disclaimer {
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Responsive                                                           */
+    /* ------------------------------------------------------------------ */
+    @media (max-width: 640px) {
+      .summary-bar { flex-direction: column; }
+      .header .meta-row { gap: 16px; }
+      .header .logo { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================================================================== -->
+<!-- Header                                                               -->
+<!-- ================================================================== -->
+<div class="header">
+  <div class="wrapper">
+    <div class="logo">RedKit</div>
+    <div class="tagline">Modular Web Red-Teaming Framework — Security Report</div>
+    <div class="meta-row">
+      <div class="meta-item">
+        <span class="meta-label">Target</span>
+        <span class="meta-value">{{ session.target or 'N/A' }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Scan Date</span>
+        <span class="meta-value">{{ session.scan_date }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Report Generated</span>
+        <span class="meta-value">{{ report_generated }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Total Findings</span>
+        <span class="meta-value">{{ session.finding_count }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================== -->
+<!-- Main content                                                          -->
+<!-- ================================================================== -->
+<div class="wrapper">
+
+  <!-- Summary Bar -->
+  <div class="summary-bar">
+    {% set sev_map = [
+      ('CRITICAL', 'critical'),
+      ('HIGH',     'high'),
+      ('MEDIUM',   'medium'),
+      ('LOW',      'low'),
+      ('INFO',     'info'),
+    ] %}
+    {% for sev_label, sev_class in sev_map %}
+    <div class="sev-card {{ sev_class }}">
+      <div class="count">{{ severity_summary.get(sev_label, 0) }}</div>
+      <div class="label">{{ sev_label }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Findings by severity group -->
+  {% for sev in severity_order %}
+    {% set findings = grouped_findings.get(sev, []) %}
+    {% if findings %}
+    <div class="section-title">{{ sev }} ({{ findings|length }})</div>
+
+    {% for finding in findings %}
+    <div class="finding-card">
+      <div class="finding-header" onclick="toggleFinding(this)">
+        <span class="sev-badge {{ finding.severity }}">{{ finding.severity }}</span>
+        <span class="finding-type">{{ finding.type }}</span>
+        <span class="finding-title">{{ finding.title }}</span>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="finding-body">
+        <p class="finding-detail">{{ finding.detail }}</p>
+        {% if finding.evidence %}
+        <div class="finding-evidence-label">Evidence</div>
+        <pre class="finding-evidence">{{ finding.evidence }}</pre>
+        {% endif %}
+        <div class="finding-meta">
+          Module: {{ finding.get('module', 'N/A') }} &nbsp;|&nbsp;
+          Timestamp: {{ finding.get('timestamp', 'N/A') }}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    {% endif %}
+  {% endfor %}
+
+  {% if session.finding_count == 0 %}
+  <div class="empty-state">
+    <p>🛡️ No findings were recorded in this session.</p>
+  </div>
+  {% endif %}
+
+</div>
+
+<!-- ================================================================== -->
+<!-- Footer                                                               -->
+<!-- ================================================================== -->
+<div class="footer">
+  <div class="wrapper">
+    <div class="disclaimer">
+      <strong>⚠️ Legal Disclaimer:</strong> This report was generated by RedKit for
+      <strong>authorized penetration testing and educational purposes only</strong>.
+      Any use of this information against systems you do not have explicit written
+      permission to test is illegal and unethical. The authors of RedKit accept no
+      responsibility for misuse of this tool or its output.
+    </div>
+    <div style="margin-top: 14px;">Generated by <strong>RedKit v1.0.0</strong></div>
+  </div>
+</div>
+
+<script>
+  function toggleFinding(header) {
+    const body = header.nextElementSibling;
+    const icon = header.querySelector('.toggle-icon');
+    const isOpen = body.classList.toggle('open');
+    icon.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+  }
+</script>
+</body>
+</html>

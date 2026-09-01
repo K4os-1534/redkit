@@ -1,0 +1,11 @@
+# RedKit Configuration
+# Sensible defaults for all scanning operations
+
+default_threads: 10
+default_timeout: 5
+default_user_agent: "RedKit/1.0 (Authorized Security Testing)"
+output_dir: "reports/"
+max_findings_display: 50
+version: "1.0.0"
+log_file: "redkit.log"
+log_level: "DEBUG"
