@@ -97,7 +97,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 class MyModule(BaseModule):
     name        = "My Module"
     description = "One-line description shown in the module browser."
-    author      = "you"
+    author      = "K4os"
     category    = "recon"  # must match the subdirectory name
 
     options = {

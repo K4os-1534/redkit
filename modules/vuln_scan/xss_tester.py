@@ -74,7 +74,7 @@ class XssTester(BaseModule):
 
     name = "XSS Tester"
     description = "Tests a query parameter for reflected XSS via payload injection."
-    author = "RedKit"
+    author = "K4os"
     category = "vuln_scan"
 
     options = {

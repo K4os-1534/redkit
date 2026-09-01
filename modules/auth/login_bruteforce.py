@@ -44,7 +44,7 @@ class LoginBruteforce(BaseModule):
 
     name = "Login Brute-Forcer"
     description = "Brute-forces a login form by POSTing passwords from a wordlist."
-    author = "RedKit"
+    author = "K4os"
     category = "auth"
 
     options = {

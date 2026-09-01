@@ -13,7 +13,7 @@ with open("requirements.txt", "r", encoding="utf-8") as f:
 setup(
     name="redkit",
     version="1.0.0",
-    author="RedKit Project",
+    author="K4os",
     description="Modular menu-driven automated red teaming tool targeting web applications.",
     long_description=long_description,
     long_description_content_type="text/markdown",

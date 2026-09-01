@@ -43,7 +43,7 @@ class SubdomainEnum(BaseModule):
 
     name = "Subdomain Enumerator"
     description = "Resolves subdomains from a wordlist via DNS A-record lookup."
-    author = "RedKit"
+    author = "K4os"
     category = "recon"
 
     options = {

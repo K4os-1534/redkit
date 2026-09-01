@@ -64,7 +64,7 @@ class DirBruteforce(BaseModule):
 
     name = "Directory Brute-Forcer"
     description = "Discovers hidden directories and files via HTTP brute-force."
-    author = "RedKit"
+    author = "K4os"
     category = "recon"
 
     options = {

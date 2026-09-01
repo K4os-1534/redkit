@@ -72,7 +72,7 @@ class DefaultCreds(BaseModule):
 
     name = "Default Credentials Checker"
     description = "Tries common default credential pairs against a login form."
-    author = "RedKit"
+    author = "K4os"
     category = "auth"
 
     options = {

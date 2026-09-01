@@ -125,7 +125,7 @@ class SqliTester(BaseModule):
 
     name = "SQLi Tester"
     description = "Tests a query parameter for error-based and time-based blind SQL injection."
-    author = "RedKit"
+    author = "K4os"
     category = "vuln_scan"
 
     options = {

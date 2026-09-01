@@ -92,7 +92,7 @@ class LfiTester(BaseModule):
 
     name = "LFI Tester"
     description = "Tests a query parameter for Local File Inclusion via path traversal payloads."
-    author = "RedKit"
+    author = "K4os"
     category = "vuln_scan"
 
     options = {

@@ -101,7 +101,7 @@ class TechFingerprint(BaseModule):
 
     name = "Technology Fingerprinter"
     description = "Identifies server/client-side tech from headers and HTML body."
-    author = "RedKit"
+    author = "K4os"
     category = "recon"
 
     options = {
