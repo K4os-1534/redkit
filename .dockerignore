@@ -1,0 +1,35 @@
+# VCS and CI
+.git/
+.github/
+.gitignore
+.pre-commit-config.yaml
+
+# Runtime artifacts
+venv/
+.venv/
+reports/
+redkit.log
+*.log
+redkit_session*.json
+
+# Build outputs
+build/
+dist/
+*.egg-info/
+
+# Tooling caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Docs that are not needed inside the image
+CHANGELOG.md
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+SECURITY.md
+DISCLAIMER.md
+tests/

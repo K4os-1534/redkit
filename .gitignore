@@ -22,6 +22,7 @@ ENV/
 reports/
 redkit.log
 *.log
+redkit_session*.json
 
 # Distribution / packaging
 MANIFEST

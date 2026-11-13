@@ -1,11 +1,34 @@
 # RedKit Configuration
-# Sensible defaults for all scanning operations
+# Place this file in the directory you run RedKit from; every key is optional.
+# Generate a copy in the current directory with: redkit --init-config
 
-default_threads: 10
-default_timeout: 5
-default_user_agent: "RedKit/1.0 (Authorized Security Testing)"
-output_dir: "reports/"
-max_findings_display: 50
-version: "1.0.0"
+# --- Network defaults -------------------------------------------------------
+default_threads: 10          # concurrent workers for thread-pooled modules
+default_timeout: 5           # HTTP timeout in seconds
+default_user_agent: "RedKit/2.0.0 (Authorized Security Testing)"
+verify_ssl: true             # validate TLS certificates (disable only for lab targets)
+proxy: ""                    # e.g. "http://127.0.0.1:8080" to route through Burp/ZAP
+rate_limit: 0.0              # minimum seconds between requests per host (0 = off)
+max_retries: 0               # retries on connection errors per request (0 = off)
+max_redirects: 10            # redirect hops followed per request
+custom_headers: {}           # extra headers sent with every request, e.g. { "Authorization": "Bearer ..." }
+custom_cookies: {}           # cookies sent with every request, for authenticated testing
+
+# --- TUI behaviour ----------------------------------------------------------
+ui_pause: true               # "Press Enter to continue" after each action
+ui_clear_screen: false       # clear screen + banner between actions (default: keep scrollback)
+live_feed: true              # echo findings to the console as they are discovered
+ask_authorization: true      # confirm written permission before the first scan
+save_history: true           # remember recent targets and last-used module options
+history_file: ""             # override the default ~/.redkit/history.json
+
+# --- Output -----------------------------------------------------------------
+output_dir: "reports"        # report files are written here (relative to CWD)
+max_findings_display: 50     # rows shown in the findings table
+
+# --- Logging ----------------------------------------------------------------
 log_file: "redkit.log"
 log_level: "DEBUG"
+
+# --- Misc -------------------------------------------------------------------
+version: "2.0.0"
